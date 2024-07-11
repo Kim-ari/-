@@ -8,6 +8,10 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  schedule:
+    - cron: ' * * * * *' # 24마다 시간 실행
+  workflow_dispatch:
+  
 
 jobs:
   build:
@@ -16,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.12"]
 
     steps:
     - uses: actions/checkout@v4
@@ -24,6 +28,10 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install Python dependencies
+      run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
     - name: Test with pytest
       run: python BendApi.py
         pytest
